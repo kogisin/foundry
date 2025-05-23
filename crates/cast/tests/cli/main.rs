@@ -1804,8 +1804,7 @@ Transaction successfully executed.
 
 casttest!(send_eip7702, async |_prj, cmd| {
     let (_api, handle) =
-        anvil::spawn(NodeConfig::test().with_hardfork(Some(EthereumHardfork::PragueEOF.into())))
-            .await;
+        anvil::spawn(NodeConfig::test().with_hardfork(Some(EthereumHardfork::Prague.into()))).await;
     let endpoint = handle.http_endpoint();
 
     cmd.args([
@@ -2614,6 +2613,16 @@ contract SimpleStorageScript is Script {
         ])
         .assert_failure().stderr_eq(str![[r#"
 Error: Failed to estimate gas: server returned an error response: error code 3: execution reverted: custom error 0x6786ad34: 000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000003e8, data: "0x6786ad34000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb9226600000000000000000000000000000000000000000000000000000000000003e8": AddressInsufficientBalance(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, 1000)
+
+"#]]);
+});
+
+// <https://basescan.org/block/30558838>
+casttest!(estimate_base_da, |_prj, cmd| {
+    cmd.args(["da-estimate", "30558838", "-r", "https://mainnet.base.org/"])
+        .assert_success()
+        .stdout_eq(str![[r#"
+Estimated data availability size for block 30558838 with 225 transactions: 52916546100
 
 "#]]);
 });
