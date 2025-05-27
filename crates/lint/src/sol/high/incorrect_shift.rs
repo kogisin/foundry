@@ -1,18 +1,16 @@
-use solar_ast::{BinOp, BinOpKind, Expr, ExprKind};
-
 use super::IncorrectShift;
 use crate::{
     declare_forge_lint,
     linter::{EarlyLintPass, LintContext},
     sol::{Severity, SolLint},
 };
+use solar_ast::{BinOp, BinOpKind, Expr, ExprKind};
 
 declare_forge_lint!(
     INCORRECT_SHIFT,
     Severity::High,
     "incorrect-shift",
-    "the order of args in a shift operation is incorrect",
-    ""
+    "the order of args in a shift operation is incorrect"
 );
 
 impl<'ast> EarlyLintPass<'ast> for IncorrectShift {

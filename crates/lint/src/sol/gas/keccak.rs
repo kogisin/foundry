@@ -1,19 +1,17 @@
-use solar_ast::{Expr, ExprKind};
-use solar_interface::kw;
-
 use super::AsmKeccak256;
 use crate::{
     declare_forge_lint,
     linter::EarlyLintPass,
     sol::{Severity, SolLint},
 };
+use solar_ast::{Expr, ExprKind};
+use solar_interface::kw;
 
 declare_forge_lint!(
     ASM_KECCAK256,
     Severity::Gas,
     "asm-keccak256",
-    "hash using inline assembly to save gas",
-    ""
+    "hash using inline assembly to save gas"
 );
 
 impl<'ast> EarlyLintPass<'ast> for AsmKeccak256 {

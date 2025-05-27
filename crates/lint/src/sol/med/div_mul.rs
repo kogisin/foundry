@@ -1,18 +1,16 @@
-use solar_ast::{BinOp, BinOpKind, Expr, ExprKind};
-
 use super::DivideBeforeMultiply;
 use crate::{
     declare_forge_lint,
     linter::{EarlyLintPass, LintContext},
     sol::{Severity, SolLint},
 };
+use solar_ast::{BinOp, BinOpKind, Expr, ExprKind};
 
 declare_forge_lint!(
     DIVIDE_BEFORE_MULTIPLY,
     Severity::Med,
     "divide-before-multiply",
-    "multiplication should occur before division to avoid loss of precision",
-    ""
+    "multiplication should occur before division to avoid loss of precision"
 );
 
 impl<'ast> EarlyLintPass<'ast> for DivideBeforeMultiply {

@@ -1,18 +1,16 @@
-use solar_ast::{VarMut, VariableDefinition};
-
 use super::ScreamingSnakeCase;
 use crate::{
     declare_forge_lint,
     linter::{EarlyLintPass, LintContext},
     sol::{Severity, SolLint},
 };
+use solar_ast::{VarMut, VariableDefinition};
 
 declare_forge_lint!(
     SCREAMING_SNAKE_CASE_CONSTANT,
     Severity::Info,
     "screaming-snake-case-const",
-    "constants should use SCREAMING_SNAKE_CASE",
-    "https://docs.soliditylang.org/en/latest/style-guide.html#constants"
+    "constants should use SCREAMING_SNAKE_CASE"
 );
 
 declare_forge_lint!(
