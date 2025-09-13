@@ -1,9 +1,11 @@
 //! Coverage reports.
 
 use alloy_primitives::map::{HashMap, HashSet};
-use comfy_table::{Attribute, Cell, Color, Row, Table, modifiers::UTF8_ROUND_CORNERS};
+use comfy_table::{
+    Attribute, Cell, Color, Row, Table, modifiers::UTF8_ROUND_CORNERS, presets::ASCII_MARKDOWN,
+};
 use evm_disassembler::disassemble_bytes;
-use foundry_common::fs;
+use foundry_common::{fs, shell};
 use semver::Version;
 use std::{
     collections::hash_map,
@@ -38,7 +40,11 @@ pub struct CoverageSummaryReporter {
 impl Default for CoverageSummaryReporter {
     fn default() -> Self {
         let mut table = Table::new();
-        table.apply_modifier(UTF8_ROUND_CORNERS);
+        if shell::is_markdown() {
+            table.load_preset(ASCII_MARKDOWN);
+        } else {
+            table.apply_modifier(UTF8_ROUND_CORNERS);
+        }
 
         table.set_header(vec![
             Cell::new("File"),
@@ -163,7 +169,7 @@ impl CoverageReporter for LcovReporter {
                         writeln!(
                             out,
                             "BRDA:{line},{branch_id},{path_id},{}",
-                            if hits == 0 { "-".to_string() } else { hits.to_string() }
+                            if hits == 0 { "-" } else { &hits.to_string() }
                         )?;
                     }
                 }
