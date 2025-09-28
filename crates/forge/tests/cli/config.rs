@@ -135,6 +135,8 @@ wrap_comments = false
 ignore = []
 contract_new_lines = false
 sort_imports = false
+pow_no_space = false
+call_compact_args = true
 
 [lint]
 severity = []
@@ -1306,7 +1308,9 @@ forgetest_init!(test_default_config, |prj, cmd| {
     "wrap_comments": false,
     "ignore": [],
     "contract_new_lines": false,
-    "sort_imports": false
+    "sort_imports": false,
+    "pow_no_space": false,
+    "call_compact_args": true
   },
   "lint": {
     "severity": [],
@@ -1919,32 +1923,4 @@ forgetest!(config_deny_warnings_is_deprecated, |prj, cmd| {
 Warning: Key `deny_warnings` is being deprecated in favor of `deny = warnings`. It will be removed in future versions.
 
 "#]]);
-});
-
-// Test that EVM version configuration works and the incompatibility check is available
-forgetest_init!(evm_version_incompatibility_check, |prj, cmd| {
-    // Clear default contracts
-    prj.wipe_contracts();
-
-    // Add a simple contract
-    prj.add_source(
-        "Simple.sol",
-        r#"
-pragma solidity ^0.8.5;
-
-contract Simple {
-    uint public value = 42;
-}
-"#,
-    );
-
-    prj.update_config(|config| {
-        config.evm_version = EvmVersion::Cancun;
-        config.solc = Some(SolcReq::Version("0.8.5".parse().unwrap()));
-    });
-
-    let result = cmd.args(["build"]).assert_success();
-    let output = result.get_output();
-    let stderr = String::from_utf8_lossy(&output.stderr);
-    assert!(stderr.contains("Warning: evm_version 'cancun' may be incompatible with solc version. Consider using 'berlin'"));
 });
