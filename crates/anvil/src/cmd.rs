@@ -100,7 +100,7 @@ pub struct NodeArgs {
     #[arg(long, visible_alias = "no-mine", conflicts_with = "block_time")]
     pub no_mining: bool,
 
-    #[arg(long, visible_alias = "mixed-mining", requires = "block_time")]
+    #[arg(long, requires = "block_time")]
     pub mixed_mining: bool,
 
     /// The hosts the server will listen on.
@@ -194,7 +194,7 @@ pub struct NodeArgs {
     #[command(flatten)]
     pub server_config: ServerConfig,
 
-    /// Path to the cache directory where states are stored.    
+    /// Path to the cache directory where states are stored.
     #[arg(long, value_name = "PATH")]
     pub cache_path: Option<PathBuf>,
 }
@@ -218,7 +218,7 @@ impl NodeArgs {
 
         let hardfork = match &self.hardfork {
             Some(hf) => {
-                if self.evm.networks.optimism {
+                if self.evm.networks.is_optimism() {
                     Some(OpHardfork::from_str(hf)?.into())
                 } else {
                     Some(EthereumHardfork::from_str(hf)?.into())

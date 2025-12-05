@@ -1,5 +1,5 @@
 // config: line_length = 110
-function test() public {
+function repros() public {
     require(
         keccak256(abi.encodePacked("this is a long string"))
             == keccak256(abi.encodePacked("some other long string")),
@@ -86,7 +86,7 @@ function returnLongBinaryOp() returns (bytes32) {
     );
 }
 
-contract Orchestrator {
+contract Repros {
     function test() public {
         uint256 globalBuyAmount =
             Take.take(state, notes, uint32(IPoolManager.take.selector), recipient, minBuyAmount);
@@ -115,5 +115,52 @@ contract Orchestrator {
             amount(),
             0 /* nonce */
         );
+
+        // https://github.com/foundry-rs/foundry/issues/11834
+        CurrenciesOutOfOrderOrEqual.selector
+            .revertWith(Currency.unwrap(key.currency0), Currency.unwrap(key.currency1));
+
+        nestedStruct.withCalls.thatCause
+            .aBreak(
+                param1,
+                param2,
+                param3 // long line
+            );
+
+        // https://github.com/foundry-rs/foundry/issues/11835
+        feeGrowthInside0X128 =
+            self.feeGrowthGlobal0X128 - lower.feeGrowthOutside0X128 - upper.feeGrowthOutside0X128;
+        feeGrowthInside0X128 =
+            self.feeGrowthGlobal0X128 - lower.feeGrowthOutside0X128 - upper.feeGrowthOutside0X128;
+
+        // https://github.com/foundry-rs/foundry/issues/11875
+        lpTail = LpPosition({
+            tickLower: posTickLower, tickUpper: posTickUpper, liquidity: lpTailLiquidity, id: uint16(id)
+        });
+    }
+
+    // https://github.com/foundry-rs/foundry/issues/11834
+    function test_ffi_fuzz_addLiquidity_defaultPool(IPoolManager.ModifyLiquidityParams memory paramSeed)
+        public
+    {
+        a = 1;
+    }
+
+    // https://github.com/foundry-rs/foundry/issues/12324
+    function test_longCallWithOpts() {
+        flow.withdraw{value: FLOW_MIN_FEE_WEI}({
+            streamId: defaultStreamId, to: users.eve, amount: WITHDRAW_AMOUNT_6D
+        });
+        flow.withdraw{
+            value: FLOW_MIN_FEE_WEI /* cmnt */
+        }({
+            streamId: defaultStreamId,
+            to: users.eve,
+            /* cmnt */
+            amount: WITHDRAW_AMOUNT_6D
+        });
+        flow.withdraw{value: FLOW_MIN_FEE_WEI}({ // cmnt
+            streamId: defaultStreamId, to: users.eve, amount: WITHDRAW_AMOUNT_6D
+        });
     }
 }

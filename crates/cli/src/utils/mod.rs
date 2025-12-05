@@ -8,6 +8,7 @@ use foundry_common::{
 };
 use foundry_config::{Chain, Config};
 use itertools::Itertools;
+use path_slash::PathExt;
 use regex::Regex;
 use serde::de::DeserializeOwned;
 use std::{
@@ -629,7 +630,7 @@ ignore them in the `.gitignore` file."
             .map(|stdout| stdout.lines().any(|line| line.starts_with('-')))
     }
 
-    /// Returns true if the given path has no submodules by checking `git submodule status`
+    /// Returns true if the given path has submodules by checking `git submodule status`
     pub fn has_submodules<I, S>(self, paths: I) -> Result<bool>
     where
         I: IntoIterator<Item = S>,
@@ -718,13 +719,9 @@ ignore them in the `.gitignore` file."
     }
 
     /// Get the URL of a submodule from git config
-    pub fn submodule_url(self, path: impl AsRef<OsStr>) -> Result<Option<String>> {
+    pub fn submodule_url(self, path: &Path) -> Result<Option<String>> {
         self.cmd()
-            .args([
-                "config",
-                "--get",
-                &format!("submodule.{}.url", path.as_ref().to_string_lossy()),
-            ])
+            .args(["config", "--get", &format!("submodule.{}.url", path.to_slash_lossy())])
             .get_stdout_lossy()
             .map(|url| Some(url.trim().to_string()))
     }
